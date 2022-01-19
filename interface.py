@@ -24,7 +24,7 @@ class App(threading.Thread):
         self.window.quit()
 
     def run(self):
-        self.obstacles = []
+        self.obstacles = []         # coordinates of added obstacles
         self.boardSize = [0,0]
         self.start = [0,0]
         self.end = [0,0]
@@ -48,13 +48,16 @@ class App(threading.Thread):
         go = tk.Button(self.window, text="Find path", width=9, font="fixedsys 12", command=self.clicked)
         go.place(relx=0.5, rely=0.85, anchor="center")
         self.window.mainloop()
-    
+
+    # initializes the boardsize, start point, and end point
     def clicked(self):
         self.boardSize = list(map(int, self.boardEntry.get().split(sep=",")))
         self.start = list(map(int, self.startEntry.get().split(sep=",")))
         self.end = list(map(int, self.endEntry.get().split(sep=",")))
         self.pathFind = True
     
+    # various methods for the game code to interact with
+    # and obtain interface information
     def waitForPathfind(self):  
         return(self.pathFind)
     
@@ -73,6 +76,7 @@ class App(threading.Thread):
     def getObstacles(self):
         return(self.obstacles)
 
+    # used for displaying popup messages, for example, error messages
     def displayMessage(self, title, message):
         self.popup = tk.Tk()
         msgSize = message.split('\\\\n')[0]
@@ -85,6 +89,7 @@ class App(threading.Thread):
         ok.place(relx=0.5, rely = 0.7, anchor="center")
         self.popup.mainloop()
 
+    # sets the clicked button to an obstacle if it is not the start or end point
     def obstacle(self, x, y):
         purple = "#340936"
         if x == self.start[0] and y == self.start[1] or x == self.end[0] and y == self.end[1]:
@@ -96,37 +101,47 @@ class App(threading.Thread):
     def startGame(self):
         self.placingObstacles = False
 
+    # creates the board using buttons as squares in a grid
     def createBoard(self, x, y):
         self.board = []
         for i in range(y):
             self.board.append([None]*x)
+        # clears the window showing menu objects
         for widget in self.window.winfo_children():
             widget.destroy()
+        # adds buttons to represent the board
         for i in range(y):
             for j in range(x):
                 self.board[i][j] = tk.Button(self.window, font="fixedsys 12", width=int(98/x), height=int(49/x), command= lambda x=j+1, y=i+1: self.obstacle(x,y))
                 self.board[i][j].grid(row=j, column=i)
         w = self.board[0][0].winfo_width()
         h = self.board[0][0].winfo_height()
+        # adds a start button
         start = tk.Button(self.window, width=1, text="Start", font="fixedsys 12", command=self.startGame)
         start.grid(row=x, column=0, sticky='nesw')
+        # adds an exit button
         leave = tk.Button(self.window, width=1, text="Exit", font="fixedsys 12", command = self.quitGame)
         leave.grid(row=x, column=y-1, sticky='nesw')
+        # sets the window size
         self.window.geometry(f'{y*w}x{x*h+20}')
         self.window.title = "A* Pathfinder"
 
+    # changes the color of a square on the board
     def changeColor(self, x, y, color):
         if self.board[y-1][x-1] != None:
             self.board[y-1][x-1].configure(bg=color)
 
+    # shows the A* pathfinding score on the grid square
     def showScore(self, x, y, score):
         self.board[y-1][x-1].configure(text=score)
 
+    # restarts the game
     def restart(self):
         self.pathFind = False
         self.window.destroy()
         self.run()
-
+    
+    # quits the game
     def quitGame(self):
         self.window.destroy()
         quit()
