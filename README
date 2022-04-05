@@ -6,5 +6,5 @@ I didn't want to create something super simple so I ended up opting for a pathfi
 This gave me the opportunity to learn about user interfaces in python which was not covered in my course. It also
 allowed me to improve my knowledge on OOP and computational thinking.
 
-Note: The program is quite inefficient and has a few bugs. Because of this, using board sizes larger than
+Note: The program is some what inefficient and has a few bugs. Because of this, using board sizes larger than
 35 x 40 is not recommended. Doing so may cause the gui to be suboptimal and the program will run slow.
